@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stop Watch</title>
+    <link rel="stylesheet" href="style.css"></style>
+</head>
+<body>
+    <script src="script.js"></script>
+    <div class="container">
+        <div class="Watch">
+            <div class="outer">
+                <div class="inner">
+                    <span class="Text Minute">0 &nbsp;:</span>
+                    <span class="Text Sec"> &nbsp;0 :</span>
+                    <span class="Text Milisec"> &nbsp0 </span>
+                </div>
+                
+            </div>
+            <div class="Button-Iam">
+                <button class="button reset display-none">Reset</button>
+                <button class="button play">Play</button>
+                <button class="button lap display-none">Lap</button>
+            </div>
+        </div>
+        <ul class="laps">
+            
+            <button class="Done">Clear</button>
+         </ul>   
+    </div>
+
+    <script>
+        const PlayButton = document.getElementsByClassName("play")[0];
+        const LapButton = document.getElementsByClassName("lap")[0];
+        const ResetButton = document.getElementsByClassName("reset")[0];
+        const clearButton = document.getElementsByClassName("Done")[0];
+        const  minut = document.getElementsByClassName("Text Minute")[0]; 
+        const second = document.getElementsByClassName("Sec")[0]; 
+        const centisecond = document.getElementsByClassName("Text Milisec")[0]; 
+
+        let isPlay = false;
+        let seccounter = 0;
+        let min;
+        let centisec;
+        let centicounter = 0;
+        let sec;
+        let mincounter = 0;
+        let okreset = false;
+        let lapagents = 0;
+
+        const toggleButton = () => {
+            LapButton.classList.remove("display-none");
+            ResetButton.classList.remove("display-none");
+        };
+
+        const play = () => {
+            if (!isPlay && !okreset) {
+                PlayButton.innerHTML = 'Pause';
+                min = setInterval(() => {
+                   
+                    min.innerHTML = `${++mincounter} :`;
+                }, 60*1000);
+                sec = setInterval(() => {
+                    if (seccounter === 60) {
+                        seccounter = 0;
+                    }
+                    second.innerHTML = ` &nbsp;${++seccounter} :`;
+                }, 1000);
+                centisec = setInterval(() => {
+                    if (centicounter === 100) {
+                        centicounter = 0;
+                        
+                    }
+                    centisecond.innerHTML = `&nbsp;${++centicounter}  `;
+                }, 10);
+
+                isPlay = true;
+                okreset = true;
+
+            } else {
+                PlayButton.innerHTML = 'Play';
+                clearInterval(min);
+                clearInterval(sec);
+                clearInterval(centisec)
+                isPlay = false;
+                okreset = false;
+            }
+            toggleButton();
+        };
+
+        const Reset = () => {
+            okreset = true;
+            play();
+            LapButton.classList.add("display-none");
+            ResetButton.classList.add("display-none");
+            second.innerHTML = '0 :';
+            centisecond.innerHTML = '0';
+            min.innerHTML = '0 :';
+        }
+
+       
+
+        const lap = () => {
+            const li = document.createElement("li");
+            const number = document.createElement("span");
+            const timestamp = document.createElement("span");
+
+            li.setAttribute("class", "lap-agent");
+            number.setAttribute("class", "number");
+            timestamp.setAttribute("class", "time-stamp");
+
+            number.innerText = `#${++lapagents}`; 
+            timestamp.innerHTML = `${mincounter} : ${seccounter} : ${centicounter}`;
+
+            li.append(number, timestamp);
+            document.querySelector('.laps').appendChild(li);
+        }
+
+        const Done = () => {
+            document.querySelector('.laps').innerHTML = ''; 
+            document.querySelector('.laps').append(clearButton); 
+        }
+
+
+
+        PlayButton.addEventListener("click", play);
+        ResetButton.addEventListener("click", Reset);
+        LapButton.addEventListener("click", lap);
+        clearButton.addEventListener("click", Done); 
+
+    </script>
+    
+    
+</body>
+</html>
